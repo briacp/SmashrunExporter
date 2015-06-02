@@ -1,0 +1,19 @@
+{
+  "name": "SmashrunExporter",
+  "version": "0.0.0",
+  "description": "Export metadata of runs from Smashrun to CouchDB",
+  "main": "index.js",
+  "keywords": [
+    "smashrun",
+    "run"
+  ],
+  "author": "Briac Pilpré",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "request": "latest",
+    "cheerio": "latest",
+    "cacheman-file": "latest",
+    "cradle": "latest",
+    "async": "latest"
+  }
+}

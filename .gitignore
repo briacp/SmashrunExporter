@@ -1,3 +1,10 @@
+# NPM Modules
+node_modules
+
+tmp
+config.js
+*.swp
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
