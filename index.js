@@ -6,7 +6,13 @@ var cheerio = require('cheerio');
 var Cacheman = require('cacheman-file');
 var async = require('async');
 var cradle = require('cradle');
+var RateLimiter = require('limiter').RateLimiter;
 
+console.log("Don't forget to to run CouchDB!");
+
+// Allow 150 requests per hour (the Twitter search limit). Also understands
+// 'second', 'minute', 'day', or a number of milliseconds
+var limiter = new RateLimiter(120, 'minute');
 
 var cacheRuns = new Cacheman('runs', {
     engine: 'file',
@@ -44,7 +50,21 @@ function exportRuns() {
 
             var key = year + '_' + month;
 
-            runCached(cacheList, key, url, processList);
+            console.log("Process List " + key);
+
+            //runCached(cacheList, key, url, processList);
+
+            request({
+                url: url,
+                headers: {
+                    Cookie: config.cookies
+                }
+            }, function (err, response, value) {
+                if (err) {
+                    throw err;
+                }
+                processList(value);
+            });
 
             if (month == config.endDate[1] && year == config.endDate[0]) {
                 break;
@@ -302,21 +322,24 @@ function processRun(runId) {
 }
 
 function getPost(url, body, cb) {
-    console.log("getPost", url, body);
-    request.post({
-        url: url,
-        method: "POST",
-        headers: {
-            Cookie: config.cookies,
-            "Content-Type": "application/json"
-        },
-        json: true,
-        body: body
-    }, function (err, response, value) {
-        if (err) {
-            throw err;
-        }
-        cb(value);
+    //console.log("getPost", url, body);
+
+    limiter.removeTokens(1, function () {
+        request.post({
+            url: url,
+            method: "POST",
+            headers: {
+                Cookie: config.cookies,
+                "Content-Type": "application/json"
+            },
+            json: true,
+            body: body
+        }, function (err, response, value) {
+            if (err) {
+                throw err;
+            }
+            cb(value);
+        });
     });
 }
 
@@ -326,18 +349,20 @@ function runCached(cache, key, url, cb) {
             console.log('(from cache)'); // XXX
             cb(value);
         } else {
-            request({
-                url: url,
-                headers: {
-                    Cookie: config.cookies
-                }
-            }, function (err, response, value) {
-                if (err) {
-                    throw err;
-                }
-                console.log('(from web)');
-                cache.set(key, value, '10d', function (err, value) {
-                    cb(value);
+            limiter.removeTokens(1, function () {
+                request({
+                    url: url,
+                    headers: {
+                        Cookie: config.cookies
+                    }
+                }, function (err, response, value) {
+                    if (err) {
+                        throw err;
+                    }
+                    console.log('(from web)');
+                    cache.set(key, value, '10d', function (err, value) {
+                        cb(value);
+                    });
                 });
             });
 
