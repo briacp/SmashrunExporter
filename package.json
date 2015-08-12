@@ -14,6 +14,7 @@
     "cheerio": "latest",
     "cacheman-file": "latest",
     "cradle": "latest",
+    "limiter": "latest",
     "async": "latest"
   }
 }
