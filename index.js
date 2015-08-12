@@ -240,7 +240,7 @@ function processRun(runId) {
                     "http://smashrun.com/services/running-jsonservice.asmx/GetMapView", {
                     runId: runId,
                     viewUserId: runData.viewUserId,
-                    measurementType: 1
+                    measurementType: 3
                 },
 
                 function (value) {
