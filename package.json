@@ -10,11 +10,14 @@
   "author": "Briac Pilpré",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "request": "latest",
-    "cheerio": "latest",
+    "async": "latest",
     "cacheman-file": "latest",
+    "cheerio": "latest",
     "cradle": "latest",
+    "express": "^4.13.4",
     "limiter": "latest",
-    "async": "latest"
+    "mongoose": "^4.2.7",
+    "request": "latest",
+    "simple-oauth2": "latest"
   }
 }

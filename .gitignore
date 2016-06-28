@@ -1,5 +1,9 @@
 # NPM Modules
 node_modules
+build
+misc
+
+*.bat
 
 smashrun.txt
 test.pl
